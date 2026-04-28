@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book a Room</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+  <style>
+    body { background: #f8f4ee; font-family: 'Segoe UI', Arial, sans-serif; }
+
+    .bs-navbar { background: #2d2d2d !important; padding: 0; }
+    .bs-navbar .navbar-brand { color: #c8a96e !important; font-size: 1.2rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+    .bs-navbar .nav-link { color: #ccc !important; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 1rem 1.1rem !important; }
+    .bs-navbar .nav-link:hover { color: #c8a96e !important; }
+
+    .page-hero { background: linear-gradient(135deg, #2d2d2d 60%, #c8a96e 100%); color: #fff; padding: 48px 0 36px; }
+    .page-hero h1 { font-size: 2rem; font-weight: 300; letter-spacing: 3px; margin-bottom: 6px; }
+    .page-hero p  { color: rgba(255,255,255,0.65); font-size: 14px; margin: 0; }
+
+    /* Booking card */
+    .booking-card { background: #fff; border: none; border-radius: 0; box-shadow: 0 4px 24px rgba(0,0,0,0.08); margin-top: -20px; position: relative; z-index: 10; padding: 36px 40px; }
+
+    /* Summary strip */
+    .summary-strip { background: #f8f4ee; border-left: 4px solid #c8a96e; padding: 18px 22px; margin-bottom: 28px; }
+    .summary-strip .label { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: #888; }
+    .summary-strip .value { font-size: 14px; color: #2d2d2d; font-weight: 600; }
+    .summary-strip .rate  { font-size: 1.4rem; font-weight: 700; color: #c8a96e; font-family: 'Segoe UI', sans-serif; }
+
+    /* Form */
+    .form-label-hotel { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #888; margin-bottom: 6px; }
+    .form-control-hotel { border-radius: 0; border: 1px solid #e0d8cc; font-size: 13px; padding: 11px 14px; }
+    .form-control-hotel:focus { border-color: #c8a96e; box-shadow: 0 0 0 0.2rem rgba(200,169,110,0.15); }
+
+    /* Total preview */
+    .total-box { background: #2d2d2d; color: #fff; padding: 16px 22px; display: flex; justify-content: space-between; align-items: center; margin-top: 20px; }
+    .total-box .nights { font-size: 13px; color: rgba(255,255,255,0.6); }
+    .total-box .amount { font-size: 1.5rem; font-weight: 700; color: #c8a96e; }
+
+    /* Buttons */
+    .btn-confirm { background: #c8a96e; color: #fff; border-radius: 0; padding: 14px 40px; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; border: 2px solid #c8a96e; transition: all 0.3s; }
+    .btn-confirm:hover { background: #2d2d2d; border-color: #2d2d2d; color: #fff; }
+    .btn-confirm:disabled { opacity: 0.4; cursor: default; }
+
+    #error   { color: #dc3545; font-size: 13px; }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg bs-navbar">
+    <div class="container">
+      <a class="navbar-brand" href="index.html"><i class="bi bi-building me-2"></i>Hotel Engine</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link" id="backLink" href="index.html"><i class="bi bi-arrow-left me-1"></i>Back</a></li>
+          <li class="nav-item"><a class="nav-link" href="mybookings.html"><i class="bi bi-list-check me-1"></i>My Bookings</a></li>
+          <li class="nav-item"><a class="nav-link" href="reports.html"><i class="bi bi-bar-chart me-1"></i>Revenue Report</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <div class="page-hero">
+    <div class="container">
+      <h1><i class="bi bi-calendar-check me-2"></i>Book a Room</h1>
+      <p>Complete your reservation details below</p>
+    </div>
+  </div>
+
+  <!-- Booking Form -->
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-7">
+        <div class="booking-card">
+
+          <!-- Summary Strip -->
+          <div class="summary-strip" id="summary">
+            <div class="row g-3">
+              <div class="col-sm-5">
+                <div class="label">Hotel</div>
+                <div class="value" id="sumHotel">—</div>
+              </div>
+              <div class="col-sm-3">
+                <div class="label">Room</div>
+                <div class="value" id="sumRoom">—</div>
+              </div>
+              <div class="col-sm-2">
+                <div class="label">Rate / night</div>
+                <div class="rate" id="sumRate">—</div>
+              </div>
+              <div class="col-sm-2">
+                <div class="label">Capacity</div>
+                <div class="value" id="sumCapacity" style="font-size:12px; color:#888;">—</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Form -->
+          <div class="row g-3">
+            <div class="col-12">
+              <label class="form-label-hotel">Guest Name <span class="text-danger">*</span></label>
+              <input type="text" id="guestName" class="form-control form-control-hotel" placeholder="Full name">
+            </div>
+            <div class="col-12">
+              <label class="form-label-hotel">Guest Email</label>
+              <input type="email" id="guestEmail" class="form-control form-control-hotel" placeholder="email@example.com">
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label-hotel">Check-In Date <span class="text-danger">*</span></label>
+              <input type="date" id="checkIn" class="form-control form-control-hotel">
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label-hotel">Check-Out Date <span class="text-danger">*</span></label>
+              <input type="date" id="checkOut" class="form-control form-control-hotel">
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label-hotel">Adults <span class="text-danger">*</span></label>
+              <input type="number" id="numAdults" class="form-control form-control-hotel"
+                     value="1" min="1" max="10">
+              <div id="adultsHint" style="font-size:11px; color:#aaa; margin-top:4px;"></div>
+            </div>
+            <div class="col-sm-6">
+              <label class="form-label-hotel">Children <small style="color:#aaa; font-size:10px; font-weight:400; letter-spacing:0;">(under 18)</small></label>
+              <input type="number" id="numChildren" class="form-control form-control-hotel"
+                     value="0" min="0" max="10" onchange="updateTotal()">
+              <div id="childrenHint" style="font-size:11px; color:#aaa; margin-top:4px;"></div>
+            </div>
+            <!-- Senior discount input — shown only if hotel has a senior pricing rule -->
+            <div class="col-sm-6" id="seniorRow" style="display:none;">
+              <label class="form-label-hotel">Oldest Guest Age <small style="color:#aaa; font-size:10px; font-weight:400; letter-spacing:0;">(for senior discount)</small></label>
+              <input type="number" id="guestAge" class="form-control form-control-hotel"
+                     placeholder="e.g. 65" min="0" max="120" onchange="updateTotal()">
+              <div id="seniorHint" style="font-size:11px; color:#aaa; margin-top:4px;"></div>
+            </div>
+          </div>
+
+          <!-- Total Preview -->
+          <div class="total-box" id="totalPreview" style="display:none;">
+            <span class="nights" id="nightsLabel"></span>
+            <span class="amount" id="totalAmount"></span>
+          </div>
+
+          <div class="mt-4">
+            <button id="confirmBtn" class="btn btn-confirm" onclick="submitBooking()">
+              <i class="bi bi-check-circle me-2"></i>Confirm Booking
+            </button>
+          </div>
+
+          <div id="error" class="mt-3"></div>
+
+          <!-- Success -->
+          <div id="success" class="mt-3" style="display:none;">
+            <div class="alert rounded-0 d-flex align-items-start gap-3" style="background:#f0faf0; border:1px solid #b2dfb2; border-left:4px solid #198754;">
+              <i class="bi bi-check-circle-fill fs-4 mt-1" style="color:#198754; flex-shrink:0;"></i>
+              <div id="successMsg"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="pb-5"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/booking.js"></script>
+  <script>
+    window.onload = () => {
+      const p = new URLSearchParams(window.location.search);
+      window.ROOM_ID      = parseInt(p.get('room_id'));
+      window.ROOM_NUMBER  = p.get('room_number');
+      window.ROOM_TYPE    = p.get('room_type');
+      window.RATE         = parseFloat(p.get('rate'));
+      window.HOTEL_NAME   = p.get('hotel');
+      window.MAX_ADULTS          = parseInt(p.get('max_adults'))          || 10;
+      window.MAX_CHILDREN        = parseInt(p.get('max_children'))        || 10;
+      window.CHILD_RATE_PCT      = parseFloat(p.get('child_rate_pct'))    || 0;
+      window.SENIOR_AGE          = parseInt(p.get('senior_age'))          || null;
+      window.SENIOR_DISCOUNT_PCT = parseFloat(p.get('senior_discount_pct')) || 0;
+
+      document.getElementById('backLink').href =
+        `hotel.html?id=${p.get('hotel_id') || ''}&name=${encodeURIComponent(window.HOTEL_NAME)}`;
+
+      document.getElementById('sumHotel').textContent    = window.HOTEL_NAME || '—';
+      document.getElementById('sumRoom').textContent     = `${window.ROOM_NUMBER} · ${window.ROOM_TYPE}`;
+      document.getElementById('sumRate').textContent     = Number(window.RATE).toLocaleString('vi-VN') + ' ₫';
+      document.getElementById('sumCapacity').innerHTML   =
+        `<i class="bi bi-person-fill" style="color:#c8a96e;"></i> ${window.MAX_ADULTS} adults` +
+        ` &nbsp;<i class="bi bi-person" style="color:#aaa; font-size:11px;"></i> ${window.MAX_CHILDREN} children`;
+
+      // Set field maximums and helper hints
+      const adultsInput   = document.getElementById('numAdults');
+      const childrenInput = document.getElementById('numChildren');
+      adultsInput.max     = window.MAX_ADULTS;
+      childrenInput.max   = window.MAX_CHILDREN;
+      document.getElementById('adultsHint').textContent   = `Max ${window.MAX_ADULTS} for this room`;
+      document.getElementById('childrenHint').textContent =
+        window.MAX_CHILDREN === 0
+          ? 'No children allowed in this room'
+          : `Max ${window.MAX_CHILDREN} for this room`;
+      if (window.MAX_CHILDREN === 0) {
+        childrenInput.disabled = true;
+        childrenInput.value    = 0;
+      }
+
+      // Show senior discount row if hotel has a senior pricing rule
+      if (window.SENIOR_AGE) {
+        document.getElementById('seniorRow').style.display = 'block';
+        document.getElementById('seniorHint').textContent  =
+          `Guests ${window.SENIOR_AGE}+ receive ${window.SENIOR_DISCOUNT_PCT}% off the base rate`;
+      }
+
+      // Re-run total whenever adult/child count changes
+      adultsInput.addEventListener('change', updateTotal);
+
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('checkIn').min  = today;
+      document.getElementById('checkOut').min = today;
+
+      // Pre-fill dates if passed from hotel availability check
+      const preCheckIn  = p.get('check_in')  || '';
+      const preCheckOut = p.get('check_out') || '';
+      if (preCheckIn)  document.getElementById('checkIn').value  = preCheckIn;
+      if (preCheckOut) document.getElementById('checkOut').value = preCheckOut;
+
+      document.getElementById('checkIn').addEventListener('change',  updateTotal);
+      document.getElementById('checkOut').addEventListener('change', updateTotal);
+      if (preCheckIn && preCheckOut) updateTotal();
+    };
+
+    // Override updateTotal to use new UI elements
+    function updateTotal() {
+      const ci = document.getElementById('checkIn').value;
+      const co = document.getElementById('checkOut').value;
+      const box = document.getElementById('totalPreview');
+      if (ci && co && co > ci) {
+        const nights = Math.round((new Date(co) - new Date(ci)) / 86400000);
+        const total  = nights * window.RATE;
+        document.getElementById('nightsLabel').textContent = nights + ' night' + (nights !== 1 ? 's' : '');
+        document.getElementById('totalAmount').textContent = 'Total: ' + total.toLocaleString('vi-VN') + ' ₫';
+        box.style.display = 'flex';
+      } else {
+        box.style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>

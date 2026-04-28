@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hotel Reservation — Search</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+  <style>
+    body { background: #f8f4ee; font-family: 'Segoe UI', Arial, sans-serif; }
+
+    /* ── Navbar ── */
+    .bs-navbar { background: #2d2d2d !important; padding: 0; }
+    .bs-navbar .navbar-brand { color: #c8a96e !important; font-size: 1.2rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+    .bs-navbar .nav-link { color: #ccc !important; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 1rem 1.1rem !important; }
+    .bs-navbar .nav-link:hover, .bs-navbar .nav-link.active { color: #c8a96e !important; }
+
+    /* ── Hero ── */
+    .page-hero { background: linear-gradient(135deg, #2d2d2d 60%, #c8a96e 100%); color: #fff; padding: 48px 0 36px; }
+    .page-hero h1 { font-size: 2.2rem; font-weight: 300; letter-spacing: 3px; margin-bottom: 6px; }
+    .page-hero p  { color: rgba(255,255,255,0.65); font-size: 14px; letter-spacing: 1px; margin: 0; }
+
+    /* ── Search card ── */
+    .search-card { background: #fff; border: none; border-radius: 0; box-shadow: 0 4px 24px rgba(0,0,0,0.09); padding: 24px 28px 20px; margin-top: -24px; position: relative; z-index: 20; }
+
+    /* ── Tabs ── */
+    .main-tabs { border-bottom: 2px solid #e0d8cc; margin-bottom: 0; }
+    .main-tabs .nav-link { border: none; border-radius: 0; color: #888; font-size: 12px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 14px 22px; margin-bottom: -2px; transition: color 0.2s; }
+    .main-tabs .nav-link:hover { color: #c8a96e; background: transparent; }
+    .main-tabs .nav-link.active { color: #2d2d2d; border-bottom: 2px solid #c8a96e; background: transparent; }
+    .main-tabs .tab-count { background: #f8f4ee; color: #c8a96e; font-size: 11px; padding: 2px 8px; border-radius: 8px; margin-left: 6px; font-weight: 700; }
+
+    /* ── Filter row ── */
+    .filter-row { background: #fff; border-bottom: 1px solid #f0ebe2; padding: 16px 28px; }
+    .form-label-sm { font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: #aaa; margin-bottom: 5px; display: block; }
+    .form-control-hotel { border-radius: 0; border: 1px solid #e0d8cc; font-size: 13px; padding: 9px 13px; }
+    .form-control-hotel:focus { border-color: #c8a96e; box-shadow: 0 0 0 0.2rem rgba(200,169,110,0.15); outline: none; }
+    .btn-search { background: #c8a96e; color: #fff; border-radius: 0; padding: 9px 24px; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; border: 2px solid #c8a96e; transition: all 0.3s; white-space: nowrap; }
+    .btn-search:hover { background: #2d2d2d; border-color: #2d2d2d; color: #fff; }
+    .btn-clear { background: #fff; color: #888; border-radius: 0; padding: 9px 14px; font-size: 13px; border: 2px solid #e0d8cc; transition: all 0.3s; }
+    .btn-clear:hover { border-color: #c8a96e; color: #c8a96e; }
+
+    /* ── Amenity toggle button ── */
+    .btn-amenity { background: #fff; color: #2d2d2d; border-radius: 0; padding: 9px 16px; font-size: 13px; border: 2px solid #e0d8cc; transition: all 0.3s; white-space: nowrap; }
+    .btn-amenity:hover { border-color: #c8a96e; color: #c8a96e; }
+    .btn-amenity-active { border-color: #c8a96e !important; color: #c8a96e !important; background: #f8f4ee !important; }
+
+    /* ── Amenity dropdown panel ── */
+    .amenity-dropdown { position: absolute; top: calc(100% + 4px); left: 0; z-index: 100; background: #fff; border: 1px solid #e0d8cc; border-top: 2px solid #c8a96e; box-shadow: 0 6px 20px rgba(0,0,0,0.1); width: 340px; padding: 12px; }
+    .amenity-dropdown .amenity-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; max-height: 260px; overflow-y: auto; }
+    .amenity-check-item { display: flex; align-items: center; gap: 8px; padding: 7px 10px; font-size: 13px; cursor: pointer; border-radius: 0; transition: background 0.15s; user-select: none; }
+    .amenity-check-item:hover { background: #f8f4ee; }
+    .amenity-check-item.selected { background: #f0ebe0; }
+    .amenity-check-item .check-icon { color: #c8a96e; font-size: 15px; flex-shrink: 0; }
+    .amenity-dropdown .amenity-footer { border-top: 1px solid #f0ebe2; padding-top: 10px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; }
+
+    /* ── City autocomplete ── */
+    .city-wrap { position: relative; }
+    .city-suggest-box { position: absolute; top: 100%; left: 0; right: 0; z-index: 50; background: #fff; border: 1px solid #e0d8cc; border-top: 2px solid #c8a96e; box-shadow: 0 6px 20px rgba(0,0,0,0.1); max-height: 220px; overflow-y: auto; display: none; }
+    .city-suggest-item { padding: 9px 14px; font-size: 13px; cursor: pointer; transition: background 0.15s; }
+    .city-suggest-item:hover { background: #f8f4ee; }
+    .city-suggest-item mark { background: transparent; color: #c8a96e; font-weight: 700; padding: 0; }
+
+    /* ── Table card ── */
+    .results-card { background: #fff; border: none; border-radius: 0; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .results-card .table { margin: 0; }
+    .results-card .table thead th { background: #2d2d2d; color: #c8a96e; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; border: none; padding: 13px 16px; font-weight: 600; }
+    .results-card .table tbody td { padding: 13px 16px; font-size: 13px; border-bottom: 1px solid #f0ebe2; vertical-align: middle; }
+    .results-card .table tbody tr { cursor: pointer; transition: background 0.15s; }
+    .results-card .table tbody tr:hover td { background: #f8f4ee; }
+
+    /* ── Misc ── */
+    .amenity-tag { display: inline-block; background: #f8f4ee; color: #2d2d2d; border: 1px solid #e8dfd0; border-radius: 10px; padding: 2px 9px; font-size: 11px; margin: 1px; }
+    .match-badge { background: #c8a96e; color: #fff; font-size: 11px; padding: 3px 9px; border-radius: 0; display: inline-block; }
+    #status { color: #888; font-size: 13px; }
+    #error  { font-size: 13px; }
+    #allError { font-size: 13px; }
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg bs-navbar">
+    <div class="container">
+      <a class="navbar-brand" href="index.html"><i class="bi bi-building me-2"></i>Hotel Engine</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" href="index.html"><i class="bi bi-search me-1"></i>Search</a></li>
+          <li class="nav-item"><a class="nav-link" href="mybookings.html"><i class="bi bi-list-check me-1"></i>My Bookings</a></li>
+          <li class="nav-item"><a class="nav-link" href="reports.html"><i class="bi bi-bar-chart me-1"></i>Revenue Report</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <div class="page-hero">
+    <div class="container">
+      <h1><i class="bi bi-search me-2"></i>Hotel Search</h1>
+      <p>Find and book the perfect room across our network of hotels</p>
+    </div>
+  </div>
+
+  <div class="container" style="padding-top: 0;">
+
+    <!-- Search Controls Card -->
+    <div class="search-card mb-0">
+      <div class="row g-3 align-items-end">
+
+        <!-- Keyword -->
+        <div class="col-lg-3 col-md-6">
+          <label class="form-label-sm">Keyword / Fuzzy</label>
+          <input id="qInput" type="text" class="form-control form-control-hotel"
+                 placeholder="e.g. Grand, grnd saign"
+                 onkeydown="if(event.key==='Enter') doSearch()">
+        </div>
+
+        <!-- City with autocomplete -->
+        <div class="col-lg-3 col-md-6">
+          <label class="form-label-sm">City</label>
+          <div class="city-wrap">
+            <input id="cityInput" type="text" class="form-control form-control-hotel"
+                   placeholder="Start typing a city…" autocomplete="off">
+            <div class="city-suggest-box" id="citySuggestions"></div>
+          </div>
+        </div>
+
+        <!-- Amenity dropdown -->
+        <div class="col-lg-3 col-md-6">
+          <label class="form-label-sm">Amenities</label>
+          <div class="position-relative">
+            <button class="btn btn-amenity w-100 text-start" id="amenityToggleBtn"
+                    onclick="toggleAmenityPanel(event)">
+              <i class="bi bi-funnel me-1"></i>Amenities
+            </button>
+            <div class="amenity-dropdown" id="amenityDropdown" style="display:none;">
+              <div class="amenity-grid" id="amenityPanel">
+                <div class="text-muted p-2" style="font-size:12px;">Loading amenities…</div>
+              </div>
+              <div class="amenity-footer">
+                <span id="amenitySelectedLabel" style="font-size:12px; color:#888;">None selected</span>
+                <button class="btn btn-sm btn-clear py-1 px-3" onclick="clearAmenities()">Clear</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="col-lg-3 col-md-6">
+          <div class="d-flex gap-2">
+            <button class="btn btn-search flex-grow-1" onclick="doSearch()">
+              <i class="bi bi-search me-1"></i>Search
+            </button>
+            <button class="btn btn-clear" onclick="clearSearch()" title="Clear filters">
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Status / error inline -->
+      <div class="mt-3 d-flex gap-3 align-items-center flex-wrap">
+        <div id="status"></div>
+        <div id="error"></div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="results-card mt-4">
+      <ul class="nav main-tabs px-2" id="hotelTabs" role="tablist">
+        <li class="nav-item">
+          <button class="nav-link active" id="tab-all" data-bs-toggle="tab" data-bs-target="#pane-all" role="tab">
+            <i class="bi bi-grid me-1"></i>All Hotels
+            <span class="tab-count" id="allCount">—</span>
+          </button>
+        </li>
+        <li class="nav-item">
+          <button class="nav-link" id="tab-search" data-bs-toggle="tab" data-bs-target="#pane-search" role="tab">
+            <i class="bi bi-filter me-1"></i>Search Results
+            <span class="tab-count" id="searchCount">0 hotels</span>
+          </button>
+        </li>
+      </ul>
+
+      <div class="tab-content">
+
+        <!-- All Hotels pane -->
+        <div class="tab-pane fade show active" id="pane-all" role="tabpanel">
+          <div id="allError"></div>
+          <div class="table-responsive">
+            <table class="table mb-0">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>City</th>
+                  <th>Stars</th>
+                  <th>Amenities</th>
+                  <th>Match</th>
+                </tr>
+              </thead>
+              <tbody id="allBody">
+                <tr>
+                  <td colspan="5" class="text-center py-4 text-muted">
+                    <div class="spinner-border spinner-border-sm me-2" style="color:#c8a96e;"></div>Loading all hotels…
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Search Results pane -->
+        <div class="tab-pane fade" id="pane-search" role="tabpanel">
+          <div class="table-responsive">
+            <table class="table mb-0">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>City</th>
+                  <th>Stars</th>
+                  <th>Amenities</th>
+                  <th>Match</th>
+                </tr>
+              </thead>
+              <tbody id="resultsBody">
+                <tr>
+                  <td colspan="5" class="text-center py-4 text-muted" style="font-size:13px;">
+                    Use the filters above and click Search to see results.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div><!-- /tab-content -->
+    </div><!-- /results-card -->
+
+    <div class="pb-5"></div>
+  </div><!-- /container -->
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/search.js"></script>
+  <script>
+    // ── Amenity panel toggle ──────────────────────────────────────────────────
+    function toggleAmenityPanel(e) {
+      e.stopPropagation();
+      const panel = document.getElementById('amenityDropdown');
+      panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    }
+    // Close panel when clicking outside
+    document.addEventListener('click', e => {
+      const panel = document.getElementById('amenityDropdown');
+      const btn   = document.getElementById('amenityToggleBtn');
+      if (panel && !panel.contains(e.target) && e.target !== btn) {
+        panel.style.display = 'none';
+      }
+    });
+
+    // Override updateAmenityLabel to also update footer label
+    const _origUpdateLabel = updateAmenityLabel;
+    function updateAmenityLabel() {
+      const checked = getCheckedAmenities();
+      const btn   = document.getElementById('amenityToggleBtn');
+      const label = document.getElementById('amenitySelectedLabel');
+      if (btn) {
+        btn.innerHTML = checked.length === 0
+          ? '<i class="bi bi-funnel me-1"></i>Amenities'
+          : `<i class="bi bi-funnel-fill me-1"></i>${checked.length} selected`;
+        btn.classList.toggle('btn-amenity-active', checked.length > 0);
+      }
+      if (label) {
+        label.textContent = checked.length === 0
+          ? 'None selected'
+          : checked.join(', ');
+      }
+    }
+
+    window.onload = () => initSearch();
+  </script>
+</body>
+</html>
