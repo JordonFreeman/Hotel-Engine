@@ -180,7 +180,7 @@
       document.getElementById('hotelName').textContent = hotelName || 'Hotel Detail';
       document.getElementById('breadcrumbName').textContent = hotelName || 'Hotel';
 
-      // Pre-fill date pickers from URL params if present
+      //pre-fill date pickers from URL params if present
       const today    = new Date().toISOString().split('T')[0];
       const checkIn  = params.get('check_in')  || '';
       const checkOut = params.get('check_out') || '';
