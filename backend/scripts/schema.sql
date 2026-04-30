@@ -21,13 +21,15 @@ CREATE TABLE Hotels (
 );
 
 CREATE TABLE Rooms (
-    ID         INT IDENTITY(1,1) PRIMARY KEY,
-    HotelID    INT            NOT NULL REFERENCES Hotels(ID),
-    RoomNumber NVARCHAR(20)   NOT NULL,
-    RoomType   NVARCHAR(50)   NOT NULL DEFAULT 'Standard', -- Standard, Deluxe, Suite
-    Rate       DECIMAL(10,2)  NOT NULL CHECK (Rate > 0),
-    Status     NVARCHAR(20)   NOT NULL DEFAULT 'AVAILABLE'
-                              CHECK (Status IN ('AVAILABLE','BOOKED','MAINTENANCE')),
+    ID          INT IDENTITY(1,1) PRIMARY KEY,
+    HotelID     INT            NOT NULL REFERENCES Hotels(ID),
+    RoomNumber  NVARCHAR(20)   NOT NULL,
+    RoomType    NVARCHAR(50)   NOT NULL DEFAULT 'Standard', -- Standard, Deluxe, Suite
+    Rate        DECIMAL(10,2)  NOT NULL CHECK (Rate > 0),
+    Status      NVARCHAR(20)   NOT NULL DEFAULT 'AVAILABLE'
+                               CHECK (Status IN ('AVAILABLE','BOOKED','MAINTENANCE')),
+    MaxAdults   INT            NOT NULL DEFAULT 2,
+    MaxChildren INT            NOT NULL DEFAULT 1,
     CONSTRAINT UQ_Room UNIQUE (HotelID, RoomNumber)
 );
 
@@ -42,6 +44,8 @@ CREATE TABLE Bookings (
     BookedAt     DATETIME       NOT NULL DEFAULT GETDATE(),
     Status       NVARCHAR(20)   NOT NULL DEFAULT 'CONFIRMED'
                                 CHECK (Status IN ('CONFIRMED','CANCELLED')),
+    NumAdults    INT            NOT NULL DEFAULT 1,
+    NumChildren  INT            NOT NULL DEFAULT 0,
     CONSTRAINT CHK_Dates CHECK (CheckOut > CheckIn)
 );
 
