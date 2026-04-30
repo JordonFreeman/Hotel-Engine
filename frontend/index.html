@@ -3,23 +3,42 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hotel Reservation — Search</title>
+  <title>Hotel Engine — Search</title>
 
+  <link href="https://fonts.googleapis.com/css?family=Taviraj:300,400,500,600,700,800,900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/linearicons.css">
+  <link rel="stylesheet" href="css/style.css">
 
   <style>
-    body { background: #f8f4ee; font-family: 'Segoe UI', Arial, sans-serif; }
+    body { background: #f8f4ee; font-family: 'Open Sans', sans-serif; }
 
-    /* ── Navbar ── */
-    .bs-navbar { background: #2d2d2d !important; padding: 0; }
-    .bs-navbar .navbar-brand { color: #c8a96e !important; font-size: 1.2rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
-    .bs-navbar .nav-link { color: #ccc !important; font-size: 13px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; padding: 1rem 1.1rem !important; }
+    /* ── Navbar (hotel-master style) ── */
+    .bs-navbar { background: rgba(255,255,255,0.97) !important; box-shadow: 0 2px 12px rgba(0,0,0,0.08); padding: 0; position: sticky; top: 0; z-index: 1000; }
+    .bs-navbar .navbar-brand img { height: 48px; }
+    .bs-navbar .nav-link { color: #2d2d2d !important; font-family: 'Open Sans', sans-serif; font-weight: 600; font-size: 13px; letter-spacing: 1px; text-transform: uppercase; padding: 1.2rem 1rem !important; }
     .bs-navbar .nav-link:hover, .bs-navbar .nav-link.active { color: #c8a96e !important; }
+    .bs-navbar .btn-book { background: #c8a96e; color: #fff !important; border-radius: 0; padding: 0.5rem 1.5rem !important; font-size: 12px; letter-spacing: 1px; }
+    .bs-navbar .btn-book:hover { background: #b5924f; }
+    .top-bar-bs { background: #2d2d2d; color: #ccc; font-size: 12px; padding: 6px 0; }
+    .top-bar-bs a { color: #c8a96e; text-decoration: none; }
+
+    /* ── Section headings (hotel-master) ── */
+    .section-heading { font-family: 'Taviraj', serif; font-size: 2.2rem; color: #2d2d2d; margin-bottom: 8px; }
+    .section-divider { width: 50px; height: 3px; background: #c8a96e; margin: 0 auto 30px; }
+    .feature-box { text-align: center; padding: 30px 20px; border: 1px solid #f0ebe2; transition: all 0.3s; }
+    .feature-box:hover { background: #f8f4ee; border-color: #c8a96e; }
+    .feature-box i { font-size: 2.5rem; color: #c8a96e; margin-bottom: 15px; }
+    .cta-strip { background: linear-gradient(135deg, #2d2d2d 60%, #c8a96e 100%); color: #fff; padding: 60px 0; }
+    .cta-strip .btn-cta { background: #c8a96e; color: #fff; border-radius: 0; padding: 14px 36px; font-size: 14px; letter-spacing: 1px; border: 2px solid #c8a96e; transition: all 0.3s; }
+    .cta-strip .btn-cta:hover { background: transparent; color: #c8a96e; }
 
     /* ── Hero ── */
     .page-hero { background: linear-gradient(135deg, #2d2d2d 60%, #c8a96e 100%); color: #fff; padding: 48px 0 36px; }
-    .page-hero h1 { font-size: 2.2rem; font-weight: 300; letter-spacing: 3px; margin-bottom: 6px; }
+    .page-hero h1 { font-family: 'Taviraj', serif; font-size: 2.2rem; font-weight: 300; letter-spacing: 3px; margin-bottom: 6px; }
     .page-hero p  { color: rgba(255,255,255,0.65); font-size: 14px; letter-spacing: 1px; margin: 0; }
 
     /* ── Search card ── */
@@ -81,19 +100,38 @@
 </head>
 <body>
 
+  <!-- Top Info Bar -->
+  <div class="top-bar-bs d-none d-md-block">
+    <div class="container">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex gap-4">
+          <span><i class="bi bi-database me-1"></i>MongoDB + MS SQL Server</span>
+          <span><i class="bi bi-shield-check me-1"></i>Pessimistic Locking · No Double Booking</span>
+        </div>
+        <div class="d-flex gap-3">
+          <a href="mybookings.html"><i class="bi bi-list-check me-1"></i>My Bookings</a>
+          <a href="reports.html"><i class="bi bi-bar-chart me-1"></i>Reports</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Navbar -->
   <nav class="navbar navbar-expand-lg bs-navbar">
     <div class="container">
-      <a class="navbar-brand" href="index.html"><i class="bi bi-building me-2"></i>Hotel Engine</a>
+      <a class="navbar-brand" href="index.html">
+        <img src="img/logo.png" alt="Hotel Engine" onerror="this.outerHTML='<span style=\'font-family:Taviraj,serif;font-size:1.3rem;font-weight:700;color:#2d2d2d;letter-spacing:2px;\'>HOTEL ENGINE</span>'">
+      </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse" id="mainNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item"><a class="nav-link active" href="index.html"><i class="bi bi-search me-1"></i>Search</a></li>
-          <li class="nav-item"><a class="nav-link" href="mybookings.html"><i class="bi bi-list-check me-1"></i>My Bookings</a></li>
-          <li class="nav-item"><a class="nav-link" href="reports.html"><i class="bi bi-bar-chart me-1"></i>Revenue Report</a></li>
+        <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link active" href="index.html">Search Hotels</a></li>
+          <li class="nav-item"><a class="nav-link" href="mybookings.html">My Bookings</a></li>
+          <li class="nav-item"><a class="nav-link" href="reports.html">Revenue Report</a></li>
         </ul>
+        <a href="mybookings.html" class="nav-link btn-book">View Bookings</a>
       </div>
     </div>
   </nav>
@@ -243,6 +281,45 @@
 
     <div class="pb-5"></div>
   </div><!-- /container -->
+
+  <!-- Why Choose Us -->
+  <section class="py-5" style="background:#fff;">
+    <div class="container">
+      <div class="text-center mb-4">
+        <h2 class="section-heading">Why Book With Us</h2>
+        <div class="section-divider"></div>
+      </div>
+      <div class="row g-3">
+        <div class="col-lg-3 col-sm-6"><div class="feature-box"><i class="bi bi-shield-lock"></i><h6 class="mt-2 fw-bold" style="font-family:'Taviraj',serif;">No Double Booking</h6><p class="text-muted small mb-0">Pessimistic SQL locking guarantees your room is exclusively yours.</p></div></div>
+        <div class="col-lg-3 col-sm-6"><div class="feature-box"><i class="bi bi-lightning-charge"></i><h6 class="mt-2 fw-bold" style="font-family:'Taviraj',serif;">Instant Search</h6><p class="text-muted small mb-0">MongoDB text indexes power instant hotel catalog queries.</p></div></div>
+        <div class="col-lg-3 col-sm-6"><div class="feature-box"><i class="bi bi-people"></i><h6 class="mt-2 fw-bold" style="font-family:'Taviraj',serif;">Family Friendly</h6><p class="text-muted small mb-0">Child rates and senior discounts built into every booking.</p></div></div>
+        <div class="col-lg-3 col-sm-6"><div class="feature-box"><i class="bi bi-graph-up-arrow"></i><h6 class="mt-2 fw-bold" style="font-family:'Taviraj',serif;">Revenue Insights</h6><p class="text-muted small mb-0">SQL window functions rank top rooms by revenue each quarter.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <div class="cta-strip">
+    <div class="container text-center">
+      <h2 class="mb-2" style="font-family:'Taviraj',serif; font-size:2rem;">Ready to Book Your Stay?</h2>
+      <p class="mb-4 opacity-75">Search available rooms and reserve instantly with guaranteed availability.</p>
+      <a href="#" class="btn btn-cta me-3">Search Hotels</a>
+      <a href="mybookings.html" class="btn btn-outline-light px-4 py-3" style="border-radius:0; font-size:14px; letter-spacing:1px;">My Bookings</a>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer-section">
+    <div class="container">
+      <div class="row pb-50 pt-4">
+        <div class="col-lg-3 col-sm-6"><div class="single-footer-widget"><h5>Hotel Engine</h5><div class="widget-text"><p>Advanced Database Systems Final Project — Polyglot Persistence.</p></div></div></div>
+        <div class="col-lg-3 col-sm-6"><div class="single-footer-widget"><h5>Navigation</h5><div class="widget-text"><p><a href="index.html" style="color:#c8a96e;">Search Hotels</a></p><p><a href="mybookings.html" style="color:#c8a96e;">My Bookings</a></p><p><a href="reports.html" style="color:#c8a96e;">Revenue Report</a></p></div></div></div>
+        <div class="col-lg-3 col-sm-6"><div class="single-footer-widget"><h5>Technology</h5><div class="widget-text"><p>MS SQL Server (ACID)</p><p>MongoDB (BASE/AP)</p><p>Node.js + Express</p></div></div></div>
+        <div class="col-lg-3 col-sm-6"><div class="single-footer-widget"><h5>Features</h5><div class="widget-text"><p>Pessimistic Locking</p><p>Date-Overlap Prevention</p><p>Window Function Reports</p></div></div></div>
+      </div>
+    </div>
+    <div class="copyright-area"><div class="container"><div class="copyright-text">&copy; <script>document.write(new Date().getFullYear());</script> Global Hotel Reservation Engine — Advanced Database Systems</div></div></div>
+  </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script src="js/config.js"></script>
