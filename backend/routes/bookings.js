@@ -26,6 +26,26 @@
 //     BOOKED     = a guest is currently checked in
 //   Future reservations are stored in Bookings and checked via date ranges —
 //   a room stays AVAILABLE physically until the guest actually arrives.
+//
+// ── SAGA PATTERN (Choreography-based) ──────────────────────────────────────
+// The booking flow spans TWO databases (MS SQL + MongoDB), so a single ACID
+// transaction cannot cover both. We use a Saga to keep them consistent:
+//
+//   Step 1 — SQL: Acquire UPDLOCK, check date overlap, INSERT booking  → COMMIT
+//   Step 2 — MongoDB: (read-only in POST — catalog is consulted for pricing
+//             rules and age policy but never written to during a booking)
+//
+// Because Step 2 is read-only, no compensating transaction is needed for the
+// normal booking flow. The Saga compensation applies to CANCELLATION (DELETE):
+//
+//   Step 1 — SQL: UPDATE Bookings SET Status='CANCELLED'  → COMMIT
+//   Compensating action: room slot is freed automatically because the overlap
+//   check filters on Status='CONFIRMED'. No MongoDB write required.
+//
+// If Step 1 (SQL INSERT) succeeds but the server crashes before responding,
+// the booking exists in SQL. The guest can look it up via GET /api/bookings.
+// This is an acceptable at-least-once outcome for the business scenario —
+// a confirmed booking with no email confirmation is recoverable by the manager.
 const express = require('express');
 const { getPool, sql } = require('../config/mssql');
 const router = express.Router();
